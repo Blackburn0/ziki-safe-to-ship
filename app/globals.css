@@ -60,3 +60,19 @@ body {
   background: var(--zk-bg);
   color: var(--zk-text);
 }
+
+/* The explanation page (/about), rendered from EXPLANATION.md */
+.doc { color: var(--zk-text2); font-size: 15px; line-height: 1.65; }
+.doc h1 { color: var(--zk-text); font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 16px; }
+.doc h2 { color: var(--zk-text); font-size: 19px; font-weight: 700; margin: 28px 0 10px; }
+.doc p, .doc ul, .doc ol, .doc table, .doc blockquote { margin: 0 0 14px; }
+.doc ul { list-style: disc; padding-left: 22px; }
+.doc ol { list-style: decimal; padding-left: 22px; }
+.doc li { margin: 4px 0; }
+.doc strong { color: var(--zk-text); }
+.doc a { color: var(--zk-accent); font-weight: 600; }
+.doc code { background: var(--zk-chip); border-radius: 6px; padding: 1px 5px; font-size: 13px; }
+.doc blockquote { background: var(--zk-warn-bg); color: var(--zk-warn-fg); border-radius: 14px; padding: 12px 16px; }
+.doc table { width: 100%; border-collapse: collapse; font-size: 14px; display: block; overflow-x: auto; }
+.doc th, .doc td { border-bottom: 1px solid var(--zk-divider); padding: 8px 10px; text-align: left; vertical-align: top; }
+.doc th { color: var(--zk-text); background: var(--zk-tint); }

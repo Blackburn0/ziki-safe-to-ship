@@ -195,7 +195,7 @@ export default function OwnerHome() {
       </Card>
 
       <p className="text-center text-xs text-zk-muted">
-        Mock-up with fake data. <button type="button" onClick={replay} className="text-zk-accent underline">Replay the night</button> · <Link href="/dashboard/today" className="text-zk-accent underline">See this page as Ziki shows it today</Link>
+        Mock-up with fake data. <Link href="/about" className="text-zk-accent underline">How this works (video)</Link> · <button type="button" onClick={replay} className="text-zk-accent underline">Replay the night</button> · <Link href="/dashboard/today" className="text-zk-accent underline">See this page as Ziki shows it today</Link>
       </p>
 
       {confirming && <UndoDialog item={confirming} onCancel={() => setConfirming(null)} onConfirm={() => undo(confirming)} />}
