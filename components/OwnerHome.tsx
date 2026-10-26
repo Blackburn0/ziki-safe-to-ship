@@ -159,9 +159,9 @@ export default function OwnerHome() {
               </div>
               <Button onClick={() => setConfirming({ id: watching.id, what: watching.what, area: watching.area, issue: watching.issue, at: watching.at, checked: watching.checked })}><Undo className="h-4 w-4" /> Undo</Button>
             </div>
-            <div className="mt-3 flex items-center gap-3">
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-zk-seg"><div className="h-full rounded-full bg-electric-blue transition-all" style={{ width: `${(watchMin / watching.of) * 100}%` }} /></div>
-              <span className="text-xs whitespace-nowrap text-zk-muted"><Eye className="mr-1 inline h-3.5 w-3.5" />{watchMin} of {watching.of} min · {watching.signals}</span>
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <div className="h-2 min-w-[140px] flex-1 overflow-hidden rounded-full bg-zk-seg"><div className="h-full rounded-full bg-electric-blue transition-all" style={{ width: `${(watchMin / watching.of) * 100}%` }} /></div>
+              <span className="text-xs text-zk-muted"><Eye className="mr-1 inline h-3.5 w-3.5" />{watchMin} of {watching.of} min · {watching.signals}</span>
             </div>
             <p className="mt-2 text-xs text-zk-muted">If errors go up while it&apos;s watched, agents undo it on their own and it moves to &ldquo;Needs you&rdquo;.</p>
           </Card>
