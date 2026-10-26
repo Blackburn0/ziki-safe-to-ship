@@ -66,7 +66,7 @@ export default async function IssuePage({ params }: { params: Promise<{ id: stri
 
           <Card className="p-5">
             <div className="flex items-center justify-between">
-              <p><Label>Conversation</Label></p>
+              <Label>Conversation</Label>
               <button type="button" className="inline-flex h-8 items-center gap-1.5 rounded-full border border-zk-border px-3 text-[13px] font-semibold"><Plus className="h-3.5 w-3.5" /> Add comment</button>
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5 text-[13px]">

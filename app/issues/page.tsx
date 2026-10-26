@@ -61,7 +61,7 @@ export default async function Issues({ searchParams }: { searchParams: Promise<{
               <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zk-tint text-zk-accent"><InboxIcon className="h-4 w-4" /></span>
               <div>
                 <h2 className="text-sm font-semibold">How the Inbox works</h2>
-                <p className="mt-1 text-[13px] text-zk-text2">Agents work through issues on their own and stop here when they need a person: to answer a question, give feedback on a design, or weigh in on a new idea.</p>
+                <p className="mt-1 text-[13px] text-zk-text2">Agents work through issues on their own and stop here when they need a person: to answer a question, give feedback on a design, or weigh in on a new idea. What already went live, and anything undone, is on <Link href="/dashboard" className="font-semibold text-zk-accent">your home page</Link>.</p>
               </div>
             </div>
             <div className="border-zk-divider p-4 max-md:border-t md:w-64 md:border-l">
