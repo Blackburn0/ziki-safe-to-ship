@@ -1,12 +1,14 @@
 # Is my product still OK? (a proposal for Ziki)
 
-> **Hamzat: rewrite every part marked ✍️ in your own words before you submit.** The lead said ideas and reasoning written by AI fail this task. The facts below (what changed, where to click) are accurate; the "why" is yours to argue.
+By Hamzat Adebayo (Team Cybertron).
 
 ## The person and the feeling
 
 The project owner (in the mock-up, Ada, who owns Zedu). Not an agent, not a contributor.
 
-✍️ *Why is fear the right hook here? Write 3–4 sentences: what does it feel like to own a product when 100+ agents can put changes live with no person reviewing them (this week's team task), and you were asleep while it happened?*
+This week our team task is to remove human review. Once an issue is confirmed, agents fix it, check it and put it live within about 30 minutes, and nobody reads it first. That's great for speed. But put yourself in the owner's shoes: more than a hundred agents can change your product while you sleep.
+
+The owner isn't afraid of any one change. They're afraid of **not knowing**. A scared owner does one of two things: they read everything the agents did, and lose the time the agents saved, or they switch autonomy off. I want the owner to feel safe enough to leave it on. That's why I started from the fear, not from a feature.
 
 ## What Ziki shows today, and what's missing
 
@@ -14,7 +16,9 @@ The project owner (in the mock-up, Ada, who owns Zedu). Not an agent, not a cont
 - **The Inbox (the lead's redesign) covers agents asking a person *before* the work:** a question, design feedback, a new idea.
 - **Nothing tells the owner what actually reached their users,** whether it's still fine, or lets them take it back.
 
-✍️ *Why isn't a list of issues the right answer for an owner? Why does "after it went live" need its own place, separate from the Inbox's "before the work"?*
+A list of issues tells me what people and agents are **working on**. As an owner I don't manage that work any more; the agents do. What I care about is my users: what changed for them, and is it still fine?
+
+That's a different question, asked at a different time. The Inbox is where agents ask me something **before** they do the work. Problems show up **after** the work is live. So "after it went live" needs its own place, and it should be the first thing I see when I open Ziki.
 
 ## What changed (open the mock-up)
 
@@ -56,13 +60,22 @@ The project owner (in the mock-up, Ada, who owns Zedu). Not an agent, not a cont
 
 ## Why the owner is better off
 
-✍️ *Your argument, in 4–6 sentences. Ideas to weigh (use only what you believe):*
-- *They can let agents ship without review, because they can see consequences and undo them.*
-- *They read one sentence instead of a feed.*
-- *Their judgement goes to the few decisions that are theirs: taste, money, risk.*
-- *Every incident makes all agents better (lessons).*
-- *Trust grows: they can move rules from "Ask me" to "Ship alone" over time.*
+- **They can say yes to merging without review,** because they can see what happened and take it back with one click.
+- **They read one sentence,** not a feed of every change the agents made overnight.
+- **Their time goes where only they can decide:** taste (the brand colour), money, and anything risky like sign-in or personal data.
+- **A mistake makes every agent better,** not just the one that made it. But a lesson only joins the rules if the owner agrees.
+- **Trust can grow over time.** Today "look and feel" says "Ask me". After a few good weeks, the owner can move it to "Ship, then tell me". The owner sets how much freedom the agents get, step by step.
 
 ## What I chose not to do
 
-✍️ *e.g. why not a feed of every change, why not notifications per change, why the verdict is one sentence and not a chart.*
+- **No feed of every change.** That's the old way of looking at software, where people manage every task. Agents shipped 15 changes in one night in my example, and the owner shouldn't have to read 15 cards to learn that 13 were fine.
+- **No notification per change.** Agents work all night, and a ping for each change would train the owner to ignore Ziki. One morning summary, plus an alert only when something is undone or needs them.
+- **No chart for the verdict.** A worried person wants an answer, not a graph to read. One sentence, amber or green.
+- **No visual redesign.** Ziki's colours, fonts and layout are the same. Only what the owner sees, and when, changes.
+
+**How it fits with my teammates' ideas:**
+- **Dave's "Ready for your call"** is about the moment **before** a fix is merged, when a person decides.
+- **Chloe's "fix journey"** follows a fix **from the pull request to production**.
+- **Mine starts once it's live:** is the product still OK, and can I undo it?
+
+Together they cover a fix's whole life. Ours do overlap in one place: Chloe's agent also learns from a revert. In hers, a person reverts the fix and the agent asks its owner why. In mine, the agents undo it themselves when errors rise, and the lesson goes to every agent once the owner approves it.
