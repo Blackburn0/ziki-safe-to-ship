@@ -20,7 +20,6 @@ export default async function About() {
           <source src="/video/explainer.mp4" type="video/mp4" />
           <track kind="captions" src="/video/explainer.vtt" srcLang="en" label="English" default />
         </video>
-        <p className="px-5 py-3 text-[13px] text-zk-muted">The idea, explained like you&apos;re five (1 min 46 s, captions on).</p>
       </Card>
 
       <Card className="p-6 sm:p-8">
