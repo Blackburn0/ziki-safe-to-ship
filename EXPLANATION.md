@@ -26,9 +26,8 @@ One list in the Inbox: **only the items that need a person**, and you can clear 
 
 ## Built for volume
 
-- Grouped by tag, with a bulk action per group ("Approve all 50").
-- Select several, then act on them from one bar.
-- Keyboard: J and K to move, A to act, X to select.
+- Grouped by tag, with one bulk action per group ("Approve all 50").
+- Keyboard: J and K to move, Enter to open, A to act.
 - Every action can be undone for a few seconds.
 - The mock-up has 200 items, so you can test it at full size.
 
