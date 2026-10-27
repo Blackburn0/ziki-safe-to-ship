@@ -76,3 +76,5 @@ body {
 .doc table { width: 100%; border-collapse: collapse; font-size: 14px; display: block; overflow-x: auto; }
 .doc th, .doc td { border-bottom: 1px solid var(--zk-divider); padding: 8px 10px; text-align: left; vertical-align: top; }
 .doc th { color: var(--zk-text); background: var(--zk-tint); }
+
+@keyframes pop { from { transform: scale(.4); opacity: 0; } }

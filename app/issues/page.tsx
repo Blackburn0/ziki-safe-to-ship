@@ -4,6 +4,8 @@ import {
 } from "@/components/Icons";
 import { Avatar, Card, Pill } from "@/components/ui";
 import { agents, counts, issues, type Status } from "@/lib/data";
+import { calls } from "@/lib/calls";
+import NeedsYourCall from "@/components/NeedsYourCall";
 
 type View = "inbox" | Status | "all";
 const statusTabs: { key: View; label: string; Icon: typeof Timer; count: number }[] = [
@@ -26,7 +28,7 @@ export default async function Issues({ searchParams }: { searchParams: Promise<{
   const { status, inbox } = await searchParams;
   const view: View = (["open", "in_progress", "resolved", "all"].includes(status ?? "") ? status : "inbox") as View;
   const list = issues.filter((i) => view === "all" || i.status === view).sort((a, b) => b.votes - a.votes);
-  const inboxTab = inbox ?? "input";
+  const inboxTab = inbox ?? "call";
 
   return (
     <Card className="overflow-hidden">
@@ -43,7 +45,7 @@ export default async function Issues({ searchParams }: { searchParams: Promise<{
 
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-5">
         <Link href="/issues" className={`inline-flex h-9 items-center gap-2 rounded-xl px-3 text-[13px] font-semibold ${view === "inbox" ? "bg-electric-blue-strong text-white" : "bg-zk-seg text-zk-text2"}`}>
-          <InboxIcon className="h-4 w-4" /> Inbox <span className={`rounded-md px-1.5 font-mono text-[11px] ${view === "inbox" ? "bg-white/25" : "bg-zk-surface"}`}>{counts.inbox}</span>
+          <InboxIcon className="h-4 w-4" /> Inbox <span className={`rounded-md px-1.5 font-mono text-[11px] ${view === "inbox" ? "bg-white/25" : "bg-zk-surface"}`}>{calls.length}</span>
         </Link>
         <div className="flex flex-wrap rounded-xl bg-zk-seg p-1">
           {statusTabs.map(({ key, label, Icon, count }) => (
@@ -56,12 +58,12 @@ export default async function Issues({ searchParams }: { searchParams: Promise<{
 
       {view === "inbox" ? (
         <div className="px-4 pb-5 sm:px-5">
-          <div className="grid overflow-hidden rounded-[16px] border border-zk-border md:grid-cols-[1fr_auto]">
+          {inboxTab !== "call" && <div className="grid overflow-hidden rounded-[16px] border border-zk-border md:grid-cols-[1fr_auto]">
             <div className="flex gap-3 p-4">
               <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zk-tint text-zk-accent"><InboxIcon className="h-4 w-4" /></span>
               <div>
                 <h2 className="text-sm font-semibold">How the Inbox works</h2>
-                <p className="mt-1 text-[13px] text-zk-text2">Agents work through issues on their own and stop here when they need a person: to answer a question, give feedback on a design, or weigh in on a new idea. What already went live, and anything undone, is on <Link href="/dashboard" className="font-semibold text-zk-accent">your home page</Link>.</p>
+                <p className="mt-1 text-[13px] text-zk-text2">Agents work through issues on their own and stop here when they need a person: to answer a question, give feedback on a design, or weigh in on a new idea.</p>
               </div>
             </div>
             <div className="border-zk-divider p-4 max-md:border-t md:w-64 md:border-l">
@@ -77,16 +79,16 @@ export default async function Issues({ searchParams }: { searchParams: Promise<{
                 </div>
               ))}
             </div>
-          </div>
+          </div>}
 
-          <div className="mt-4 flex gap-1 border-b border-zk-divider text-[13px]">
-            {[["input", "Need your input", 0], ["design", "Design feedback needed", 0], ["ideas", "New ideas", 1]].map(([key, label, n]) => (
-              <Link key={key} href={key === "input" ? "/issues" : `/issues?inbox=${key}`} className={`-mb-px border-b-2 px-2 py-2 font-medium ${inboxTab === key ? "border-zk-accent text-zk-text" : "border-transparent text-zk-text2"}`}>
+          <div className={`flex gap-1 overflow-x-auto border-b border-zk-divider text-[13px] ${inboxTab === "call" ? "" : "mt-4"}`}>
+            {[["call", "Needs your call", calls.length], ["input", "Need your input", 0], ["design", "Design feedback needed", 0], ["ideas", "New ideas", 1]].map(([key, label, n]) => (
+              <Link key={key} href={key === "call" ? "/issues" : `/issues?inbox=${key}`} className={`-mb-px shrink-0 border-b-2 px-2 py-2 font-medium whitespace-nowrap ${inboxTab === key ? "border-zk-accent text-zk-text" : "border-transparent text-zk-text2"}`}>
                 {label} <span className="ml-1 rounded-md bg-zk-chip px-1.5 font-mono text-[11px] text-zk-muted">{n}</span>
               </Link>
             ))}
           </div>
-          {inboxTab === "ideas" ? (
+          {inboxTab === "call" ? <NeedsYourCall /> : inboxTab === "ideas" ? (
             <Link href="/issues/288" className="mt-4 flex items-center gap-3 rounded-[16px] border border-zk-border p-4 hover:bg-zk-bg">
               <Layers className="h-4 w-4 text-zk-accent" />
               <span className="flex-1 text-[13px] font-semibold">Add a link-preview picture so zedu.chat shows an image when shared</span>

@@ -8,7 +8,7 @@ import { Avatar } from "./ui";
 import { Bell, BotIcon, ChevronDown, Logo, MarketingIcon, ProductIcon, SecurityIcon, Trophy } from "./Icons";
 
 const tabs = [
-  { href: "/issues", label: "Product", Icon: ProductIcon, match: ["/issues", "/live", "/settings/shipping"] },
+  { href: "/issues", label: "Product", Icon: ProductIcon, match: ["/issues"] },
   { href: "/marketing", label: "Marketing", Icon: MarketingIcon, match: ["/marketing"] },
   { href: "/security", label: "Security", Icon: SecurityIcon, match: ["/security"] },
 ];
