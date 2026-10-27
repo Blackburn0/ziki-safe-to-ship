@@ -6,7 +6,7 @@ import { marked } from "marked";
 import { ArrowLeft } from "@/components/Icons";
 import { Card } from "@/components/ui";
 
-export const metadata = { title: "How this works · Ziki", description: "Needs your call: the few decisions agents can't make, in one list you can clear in minutes." };
+export const metadata = { title: "How this works · Ziki", description: "Needs your call: the bugs your agents couldn't agree on how to fix, most serious first." };
 
 export default async function About() {
   const md = await readFile(path.join(process.cwd(), "EXPLANATION.md"), "utf-8");

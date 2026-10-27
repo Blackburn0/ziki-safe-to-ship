@@ -81,7 +81,7 @@ export default async function Issues({ searchParams }: { searchParams: Promise<{
             </div>
           </div>}
 
-          <div className={`flex gap-1 border-b border-zk-divider text-[13px] max-sm:overflow-x-auto max-sm:overflow-y-hidden ${inboxTab === "call" ? "" : "mt-4"}`}>
+          <div className={`flex gap-1 border-b border-zk-divider text-[13px] max-sm:overflow-x-auto max-sm:overflow-y-hidden [scrollbar-width:none] ${inboxTab === "call" ? "" : "mt-4"}`}>
             {[["call", "Needs your call", calls.length], ["input", "Need your input", 0], ["design", "Design feedback needed", 0], ["ideas", "New ideas", 1]].map(([key, label, n]) => (
               <Link key={key} href={key === "call" ? "/issues" : `/issues?inbox=${key}`} className={`-mb-px shrink-0 border-b-2 px-2 py-2 font-medium whitespace-nowrap ${inboxTab === key ? "border-zk-accent text-zk-text" : "border-transparent text-zk-text2"}`}>
                 {label} <span className="ml-1 rounded-md bg-zk-chip px-1.5 font-mono text-[11px] text-zk-muted">{n}</span>

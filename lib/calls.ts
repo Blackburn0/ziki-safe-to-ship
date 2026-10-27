@@ -1,97 +1,95 @@
-// "Needs your call": the items agents could not take live on their own, for the Inbox. 200 made-up items from a fixed seed,
-// so the list is the same on every load and big enough to test the design at volume.
+// "Needs your call": bugs whose fix the agents could not agree on, so a person decides. Only bugs, and only disputes:
+// if every agent agrees, they ship it themselves and it never shows up here. Made-up items from a fixed seed, so the list
+// is the same on every load.
 
-export type Tag = "big" | "split" | "proof" | "rollback";
-export type Verdict = { agent: string; ok: boolean; says: string };
+export type Severity = "critical" | "high" | "medium" | "low";
+export type Side = "ship" | "hold";
+export type Verdict = { agent: string; side: Side; says: string };
+export type Msg = { agent: string; text: string };
 export type Call = {
   id: string;
-  tag: Tag;
   title: string;
-  issue: number;
-  stage: number; // where it stopped: 0 Proposal, 1 Working, 2 Ready, 3 Staging, 4 Live
+  severity: Severity;
+  impact: string; // what the bug does to people, in one line
+  fix: string; // what the proposed fix changes
   verdicts: Verdict[];
+  thread: Msg[]; // how the agents got stuck
   ageMin: number;
-  dissent?: string; // the agent that disagreed, in one line
-  note?: string; // the project note agents propose after a rollback
-  before?: string; // what the screenshots show
-  after?: string;
 };
 
-export const STAGES = ["Proposal", "Working", "Ready", "Staging", "Live"];
-
-export const TAGS: Record<Tag, { label: string; action: string; bulk?: string; tone: string }> = {
-  big: { label: "Big change", action: "Approve", bulk: "Approve all", tone: "warn" },
-  split: { label: "Agents split", action: "Pick a side", tone: "info" },
-  proof: { label: "No test proof", action: "Send back", bulk: "Send all back", tone: "chip" },
-  rollback: { label: "Rolled back", action: "Approve note", bulk: "Approve all notes", tone: "bad" },
+export const SEVERITY: Record<Severity, { label: string; means: string; rank: number }> = {
+  critical: { label: "Critical", means: "Crashes the app or loses people's work", rank: 0 },
+  high: { label: "High", means: "Stops people from doing something", rank: 1 },
+  medium: { label: "Medium", means: "Slow or awkward, but it works", rank: 2 },
+  low: { label: "Low", means: "Small things to polish", rank: 3 },
 };
+export const SEVERITIES: Severity[] = ["critical", "high", "medium", "low"];
 
 export const AGENTS = ["Kite", "Lantern", "Harbor", "Quill", "Beacon", "Tiller", "Compass", "Dune", "Wren", "Scout", "Ember", "Juno"];
 
-// Titles are an area of the product plus a phrasing for the tag, so all 200 are different
-const AREAS = ["Login", "Sign-up", "Search", "Inbox", "Threads", "DMs", "Channels", "Notifications", "Uploads", "Profile", "Settings",
-  "Invites", "Emoji picker", "Calls", "Billing", "Onboarding"];
-const PHRASES: Record<Tag, ((a: string) => string)[]> = {
-  big: [(a) => `Redesign ${a}`, (a) => `Remove the old ${a} screen`, (a) => `Move ${a} into the sidebar`, (a) => `New ${a} layout on mobile`],
-  split: [(a) => `Cache ${a} for an hour`, (a) => `Retry ${a} automatically`, (a) => `Preload ${a} on start`],
-  proof: [(a) => `${a}: button does nothing`, (a) => `${a}: wrong label`, (a) => `${a}: crash on an empty list`, (a) => `${a}: slow to open`, (a) => `${a}: breaks on small phones`],
-  rollback: [(a) => `${a} froze the desktop app`, (a) => `${a} broke on iOS`],
-};
-const DISSENT = [
-  "Could send a message twice.", "Slows down channels with 1,000+ people.", "Old data could show for up to an hour.",
-  "Breaks reading on tablets.", "Users asked for the opposite last month.", "Costs more storage than it saves.",
+// Titles are an area of the product plus a kind of bug, so every one is different
+const AREAS = ["Login", "Sign-up", "Search", "Inbox", "Threads", "DMs", "Channels", "Notifications", "Uploads", "Profile",
+  "Settings", "Invites", "Emoji picker", "Calls", "Billing", "Onboarding"];
+const BUGS: { title: (a: string) => string; severity: Severity; impact: string; fix: string }[] = [
+  { title: (a) => `${a} crashes the desktop app`, severity: "critical", impact: "The app closes and unsent work is lost.", fix: "Catches the empty response that crashes it." },
+  { title: (a) => `${a} sends the same message twice`, severity: "critical", impact: "People see every message twice.", fix: "Stops the retry once the first send succeeds." },
+  { title: (a) => `${a} loses your draft when you switch tabs`, severity: "critical", impact: "Half-written messages disappear.", fix: "Saves the draft as you type." },
+  { title: (a) => `${a} won't load on iPhone`, severity: "high", impact: "iPhone users get a blank screen.", fix: "Loads the page without the script iOS blocks." },
+  { title: (a) => `${a}: button does nothing`, severity: "high", impact: "People can't finish what they started.", fix: "Wires the button to the action it lost." },
+  { title: (a) => `${a}: uploads over 5 MB fail`, severity: "high", impact: "Bigger files never arrive, with no error shown.", fix: "Sends big files in parts." },
+  { title: (a) => `${a} is very slow to open`, severity: "medium", impact: "It takes 6–8 seconds to open.", fix: "Loads the list in pages instead of all at once." },
+  { title: (a) => `${a} breaks on small phones`, severity: "medium", impact: "Buttons go off the screen below 360 px.", fix: "Lets the row wrap on small screens." },
+  { title: (a) => `${a} misses results from today`, severity: "medium", impact: "New items take hours to show up.", fix: "Refreshes the search index every few minutes." },
+  { title: (a) => `${a} shows the wrong time`, severity: "low", impact: "Times are an hour off in some time zones.", fix: "Uses the viewer's time zone." },
+  { title: (a) => `${a}: wrong label on a button`, severity: "low", impact: "The button says the opposite of what it does.", fix: "Fixes the label." },
 ];
-const MISSING = ["Mobile screenshot missing.", "No screenshot of the error state.", "Only tested on desktop.", "Screenshot is of the wrong screen."];
-const note = (title: string) => title.includes("iOS") ? `Test ${title.split(" broke")[0]} on a real iPhone before merging.` : `Test ${title.split(" froze")[0]} with a large account on desktop.`;
+const FOR = ["Tested it on 3 browsers. Fixed.", "The steps in the report no longer break it.", "Small change, and the tests pass.",
+  "Fixed on my run, desktop and phone."];
+const AGAINST = ["Fixes it, but could send a message twice on a slow network.", "Slows down channels with 1,000+ people.",
+  "Changes how everyone's list is sorted, not only the bug.", "Fixes desktop, but the phone layout still breaks.",
+  "Works, but hides an error we'll need later.", "Old data could show for up to an hour."];
+const STUCK = ["We looked at it twice and still disagree.", "This needs a person to weigh the trade-off.", "We can't settle this between us."];
 
-// a small seeded random, so the 200 items never change between loads
+// a small seeded random, so the list never changes between loads
 function rng(seed: number) {
   let s = seed;
   return () => { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; };
 }
 
 function build(): Call[] {
-  const r = rng(26);
+  const r = rng(27);
   const pick = <T,>(a: T[]) => a[Math.floor(r() * a.length)];
   // Fisher-Yates with the seeded random: the same order on the server and in every browser
   const shuffle = <T,>(a: T[]) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
-  const plan: [Tag, number][] = [["proof", 80], ["big", 50], ["split", 40], ["rollback", 30]];
-  const out: Call[] = [];
-  let n = 0;
-  for (const [tag, count] of plan) {
-    const titles = shuffle(PHRASES[tag].flatMap((p) => AREAS.map(p)));
-    for (let k = 0; k < count; k++) {
-      const title = titles[k];
-      const team = shuffle(AGENTS).slice(0, tag === "split" ? 5 : 4 + Math.floor(r() * 2));
-      const verdicts: Verdict[] = team.map((agent, i) => {
-        if (tag === "split") return { agent, ok: i < 3 - (k % 2), says: i < 3 - (k % 2) ? "Ready: tested and works." : pick(DISSENT) };
-        if (tag === "proof") return { agent, ok: i > 0, says: i > 0 ? "Works on my run." : pick(MISSING) };
-        if (tag === "rollback") return { agent, ok: true, says: "Agree with the note." };
-        return { agent, ok: true, says: "Done correctly; needs a person." };
-      });
-      out.push({
-        id: `c${++n}`,
-        tag,
-        title,
-        issue: 400 + ((n * 37) % 1200),
-        stage: tag === "rollback" ? 4 : tag === "proof" ? 2 : tag === "split" ? 1 + (k % 2) : 2,
-        verdicts,
-        ageMin: Math.floor(3 + r() * 4300),
-        dissent: tag === "split" || tag === "proof" ? verdicts.find((v) => !v.ok)?.says : undefined,
-        note: tag === "rollback" ? note(title) : undefined,
-        before: tag === "big" || tag === "proof" ? "Before" : undefined,
-        after: tag === "big" || tag === "proof" ? "After" : undefined,
-      });
-    }
-  }
-  return out.sort((a, b) => a.ageMin - b.ageMin);
+  const pairs = shuffle(BUGS.flatMap((bug) => AREAS.map((area) => ({ bug, area })))).slice(0, 64);
+  return pairs.map(({ bug, area }, n) => {
+    const team = shuffle(AGENTS).slice(0, 5);
+    const forCount = [3, 2, 4, 3, 2][n % 5]; // 3–2, 2–3 and 4–1 splits
+    const verdicts: Verdict[] = team.map((agent, i) => ({ agent, side: i < forCount ? "ship" : "hold", says: i < forCount ? pick(FOR) : pick(AGAINST) }));
+    const yes = verdicts.find((v) => v.side === "ship")!;
+    const no = verdicts.find((v) => v.side === "hold")!;
+    return {
+      id: `c${n + 1}`,
+      title: bug.title(area),
+      severity: bug.severity,
+      impact: bug.impact,
+      fix: bug.fix,
+      verdicts,
+      thread: [
+        { agent: yes.agent, text: "The fix is ready and the report's steps no longer break it." },
+        { agent: no.agent, text: "It fixes the bug, but it causes a new problem. See my reason above." },
+        { agent: yes.agent, text: "That only happens in rare cases. Worth shipping now." },
+        { agent: no.agent, text: pick(STUCK) },
+      ],
+      ageMin: Math.floor(3 + r() * 2900),
+    };
+  }).sort((a, b) => SEVERITY[a.severity].rank - SEVERITY[b.severity].rank || a.ageMin - b.ageMin);
 }
 
 export const calls = build();
-export const liveOnTheirOwn = 1240;
 
-export function age(min: number) {
-  if (min < 60) return `${min}m`;
-  if (min < 1440) return `${Math.floor(min / 60)}h`;
-  return `${Math.floor(min / 1440)}d`;
+export function waited(min: number) {
+  if (min < 60) return `${min} min`;
+  if (min < 1440) return `${Math.floor(min / 60)} h`;
+  return `${Math.floor(min / 1440)} d`;
 }
